@@ -1,6 +1,6 @@
 const sql = require('mssql')
 
-const config = {
+const con = {
     user: 'admin',
     password: 'pass',
     server: 'localhost',
@@ -8,10 +8,11 @@ const config = {
     options: {
         trustedconnection: true,
         enableArithAbort: true,
-        instancename:"DESKTOP-0BGBFV3",
+        instancename: "DESKTOP-0BGBFV3",
         trustServerCertificate: true,
     },
-    port:1433
+    port: 1433
 }
 
-module.exports = config
+
+module.exports = con

@@ -1,47 +1,50 @@
 var express = require('express');
 var router = express.Router();
-var loginModel = require('../models/loginmodule');
-const path=require('path');
+var con = require('../Database/conn');
+const sql = require('mssql');
+const { request } = require('express');
 
+function execSQLQuery(sqlQry, res) {
+    global.conn.request()
+        .query(sqlQry)
+        .then(result => res.json(result.recordset))
+        .catch(err => res.json(err));
+}
 
-router.get('/pao', async function (req, res, next) { // tentar integrar uma pagina html
-    
-    res.sendFile('../public/LOGIN',{title: 'Login'});
-
+router.get('/', function (req, res, next) { // tentar integrar uma pagina html
+    res.render('login');
 });
+router.get('/home', function (req, res, next) { // tentar integrar uma pagina html
+    res.render('home');
+});
+router.get('/clienteslog', (req, res) => {
+    execSQLQuery('SELECT * FROM Cllogin', res);
+})
 
-
-    router.get('/', async function (req, res, next) { //test para ver se a base de dados esta ligada
-        
-        console.log("[loginrouter] A mandar os clientes");
-        let result = await loginModel.getlogin();
-        res.send(result);
-    });
-
-    router.post("/totp-secret", async function (request, response, next) {
-        var secret = Speakeasy.generateSecret({ length: 20 });
-        response.send({ "secret": secret.base32 });
-    });
-
-    router.post("/totp-generate", async function (request, response, next) {
-        response.send({
-            "token": Speakeasy.totp({
-                secret: request.body.secret,
-                encoding: "base32"
-            }),
-            "remaining": (30 - Math.floor((new Date()).getTime() / 1000.0 % 30))
+router.post('/registrarCL', function (req, res, next) {
+    var request = new sql.Request();
+    request.input('email', sql.VarChar(255), req.body.email)
+        .input('password', sql.VarChar(255), req.body.password)
+        .query('insert into cllogin values (@email,@password)', function (err, result) {
         });
-    });
+})
 
-    router.post("/totp-validate", async function (request, response, next) {
-        response.send({
-            "valid": Speakeasy.totp.verify({
-                secret: request.body.secret,
-                encoding: "base32",
-                token: request.body.token,
-                window: 0
-            })
+
+router.post('/login', async function (req, res, next) { //test login
+    var request = new sql.Request();
+    request.input('email', sql.VarChar(255), req.body.email)
+        .input('password', sql.VarChar(255), req.body.password)
+        .query('select clo_email,clo_pass from cl_login where clo_email=@email and clo_pass=@password', function (err, result) {
+
+            if (req.session.email == req.body.email && req.session.password == req.body.password) {
+
+                res.redirect('/home');
+            } else {
+                res.redirect('/');
+            }
         });
-    });
+})
 
-    module.exports = router; 
+
+
+module.exports = router; 

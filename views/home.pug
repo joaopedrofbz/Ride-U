@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  link( href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+  link( rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css")
+  link( rel="stylesheet" href="/stylesheets/swiper-bundle.min.css")  
+  link( rel="stylesheet" href="/stylesheets/styles.css")
+  <title>RIDE-U</title>
+</head>
+
+<body>
+  <header class="header" id="header">
+    <nav class="nav container">
+      <a href="#" class="nav__logo">
+        <img src="images/logoride" alt="" class="nav__logo-img">
+        RIDE-U
+      </a>
+
+      <a href="login.html" class="button button--ghost">Log-in Cliente</a>
+      <a href="loginCondutor.html" class="button button--ghost">Log-in Condutor</a>
+
+      <div class="nav__close" id="nav-close">
+        <i class='bx bx-x'></i>
+      </div>
+
+      <div class="nav__toggle" id="nav-toggle">
+        <i class='bx bx-grid-alt'></i>
+      </div>
+
+    </nav>
+  </header>
+
+  <main class="main">
+
+    <section class="section about" id="about">
+      <div class="about__container container grid">
+        <div class="about__data">
+          <h2 class="home__title">SOBRE A RIDE-U</h2>
+          <p class="about__description">
+            A RIDE-U é uma plataforma de transporte privado que te permite ir para onde quiseres de forma fácil e rápida.Cria hoje uma conta e começa já a viajar connosco.
+          </p>
+          a( href="/registrarCL" class="button") Registar como Cliente
+        </div>
+
+        <img src="jpeg/pass.jpg" alt="" class="about__img">
+      </div>
+    </section>
+
+    <section class="home container" id="home">
+      <div class="swiper home-swiper">
+        <div class="swiper-wrapper">
+          
+          <section class="swiper-slide">
+            <div class="home__content grid">
+              <div class="home__group">
+                <img src="jpeg/cond.jpg" alt="" class="home__img">
+                <div class="home__indicator"></div>
+
+                <div class="home__details-img">
+                  <h4 class="home__details-title">Condutor RIDE-U</h4>
+                  <span class="home__details-subtitle">Hugo Freitas</span>
+                </div>
+              </div>
+
+              <div class="home__data">
+                <h3 class="home__subtitle">Gostas de Conduzir?</h3>
+                <h1 class="home__title">REGISTA-TE <br> COMO <br> CONDUTOR!</h1>
+                <p class="home__description">Preenche um formulário para de registares.Apenas precisas de ter carta há pelo menos 3 anos e possuir um carro!
+                </p>
+
+                <div class="home__buttons">
+                  <a href="registoCond.html" class="button">Registo como Condutor</a>
+                </div>
+              </div>
+            </div>
+          </section>
+
+    </section>
+
+    
+
+      <div id="popup1">
+        <h2>Evento 1</h2>
+        <p><b>Categoria:</b> Caminhada</p>
+        <p><b>Descrição:</b> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sunt fuga obcaecati, dolor</p>
+        <p><b>Faixas Etárias:</b> Todas as faixas</p>
+        <p><b>Local:</b> Praia de Carcavelos, Carcavelos, Cascais</p>
+        iframe(
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5549.578308495179!2d-9.33525719614146!3d38.681164886079515!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd1ec8c2dfdc70cd%3A0x5b1c934a3f472609!2sPraia%20de%20Carcavelos!5e0!3m2!1spt-PT!2spt!4v1639413108774!5m2!1spt-PT!2spt"
+          width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy")
+        <p><b>Data:</b> 29/12/2021</p>
+        <p><b>Hora:</b> 13:00-16:00</p>
+        <p><b>Vagas:</b> 46/100</p>
+        <a href="#" onclick="toggle()">Fechar</a>
+        <div class="btn-block">
+          <button type="submit" onclick="alerts()">Inscrever-me</button>
+        </div>
+      </div>
+    </section>
+
+    <!--==================== FOOTER ====================-->
+    <footer class="footer section">
+      <div class="footer__container container grid">
+        <div class="footer__content">
+          <a href="#" class="footer__logo">
+            <img src="png/100.png.jpg" alt="" class="footer__logo-img">
+            RIDE-U
+          </a>
+
+          <p class="footer__description">Ride you everywhere</p>
+
+          <div class="footer__social">
+            <a href="https://www.facebook.com/" target="_blank" class="footer__social-link">
+              <i class='bx bxl-facebook'></i>
+            </a>
+            <a href="https://www.instagram.com/" target="_blank" class="footer__social-link">
+              <i class='bx bxl-instagram-alt'></i>
+            </a>
+            <a href="https://twitter.com/" target="_blank" class="footer__social-link">
+              <i class='bx bxl-twitter'></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer__content">
+          <h3 class="footer__title">Sobre Nós</h3>
+
+          <ul class="footer__links">
+            <li>
+              <a href="#" class="footer__link">Quem Somos</a>
+            </li>
+            <li>
+              <a href="#trick" class="footer__link">Clientes</a>
+            </li>
+            <li>
+              <a href="#" class="footer__link">Condutores</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer__content">
+          <h3 class="footer__title">Parceiros</h3>
+
+          <ul class="footer__links">
+            <li>
+              <a href="#" class="footer__link">Pricing</a>
+            </li>
+            <li>
+              <a href="#" class="footer__link">Discounts</a>
+            </li>
+            <li>
+              <a href="#" class="footer__link">Shipping mode</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="footer__content">
+          <h3 class="footer__title">Sobre Nos </h3>
+
+          <ul class="footer__links">
+            <li>
+              <a href="#" class="footer__link">Blog</a>
+            </li>
+            <li>
+              <a href="#" class="footer__link">About us</a>
+            </li>
+            <li>
+              <a href="#" class="footer__link">Our mision</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <!--=============== SCROLL UP ===============-->
+    <a href="#" class="scrollup" id="scroll-up">
+      <i class='bx bx-up-arrow-alt scrollup__icon'></i>
+    </a>
+
+    <!--=============== SCROLL REVEAL ===============-->
+    <script src="assets/js/scrollreveal.min.js"></script>
+
+    <!--=============== SWIPER JS ===============-->
+    <script src="assets/js/swiper-bundle.min.js"></script>
+
+    <!--=============== MAIN JS ===============-->
+    <script src="js/home.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
