@@ -7,110 +7,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RIDE-U | Criar Registo</title>
     link( href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
-
-
-    link( rel="stylesheet" href="stylesheets/styles.css")
-    link( rel="stylesheet" href="stylesheets/formulario.css")
+    link(rel="stylesheet" href="stylesheets/styles.css")
+    link(rel="stylesheet" href="stylesheets/formulario.css")
 </head>
+  <body>
+    <header class="header" id="header">
+      <nav class="nav container">
+        <a href="#" class="nav__logo">
+          <img src="images/logoride.jpg" alt="" class="nav__logo-img">Ride-U
+        </a>
 
-<body>
-    
-  <header class="header" id="header">
-    <nav class="nav container">
-      <a href="#" class="nav__logo">
-        <img src="png/100.png.jpg" alt="" class="nav__logo-img">
-        ECO
-      </a>
+        <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+            <li class="nav__item">
+              <a href="#home" class="nav__link active-link">Home</a>
+            </li>
 
-      <div class="nav__menu" id="nav-menu">
-        <ul class="nav__list">
-          <li class="nav__item">
-            <a href="#home" class="nav__link active-link">Home</a>
-          </li>
-
-          <li class="nav__item">
-            <a href="tickets.html" class="nav__link">Bilhetes</a>
-          </li>
-
-          <li class="nav__item">
-            <a href="#trick" class="nav__link">Dashboard</a>
-          </li>
-
-          <li class="nav__item">
-            <a href="#new" class="nav__link">Definições</a>
-          </li>
-
-          <a href="login.html" class="button button--ghost">Log-out</a>
-        </ul>
-
-        <div class="nav__close" id="nav-close">
-          <i class='bx bx-x'></i>
+            <li class="nav__item">
+              <a href="tickets.html" class="nav__link">Bilhetes</a>
+            </li>
+            <li class="nav__item">
+              <a href="#trick" class="nav__link">Dashboard</a>
+            </li>
+            <li class="nav__item">
+              <a href="#new" class="nav__link">Definições</a>
+            </li>
+            <a href="/login" class="button button--ghost">Log-in</a>
+          </ul>
+          <div class="nav__close" id="nav-close">
+            <i class='bx bx-x'></i>
+          </div>
         </div>
+        <div class="nav__toggle" id="nav-toggle">
+          <i class='bx bx-grid-alt'></i>
+        </div>
+      </nav>
+    </header>
+
+    
+      <div class="testbox">
+          <form action="/registrarCL" method="post">
+            <div class="item">
+              <h1 style="color: black;">Registo Cliente</h1>
+            </div>  
+            <br>
+            <br>
+            <div class="item">
+              <p>Data Nascimento</p>
+              <input type="date" name="CldataNasc"required/>
+            </div>
+            <div class="item">
+              <p>Primeiro Nome</p>
+              <input type="text" name="Clnome"required/>
+            </div>
+            <div class="item">
+              <p>Nome do Meio</p>
+              <input type="text" name="ClnomeMeio" />
+            </div>
+            <div class="item">
+              <p>Apelido</p>
+              <input type="text" name="Clapelido"required/>
+            </div>
+            <div class="item">
+              <p>Género</p>
+              <select required name="Clgenero">
+                <option value=""></option>
+                <option value="1">F</option>
+                <option value="2">M</option>
+              </select>
+            </div>
+            <div class="item">
+              <p>Nº Telemóvel</p>
+              <input type="text" name="Cl_Telemovel" required/>
+            </div> 
+            <div class="item">
+              <p>E-mail</p>
+              <input type="text" name="ClEmail"required/>
+            </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+            <div class="btn-block">
+              <button type="submit" >Submeter</button>
+            </div>
       </div>
-
-      <div class="nav__toggle" id="nav-toggle">
-        <i class='bx bx-grid-alt'></i>
-      </div>
-
-    </nav>
-  </header>
-  <form action="/registrarCL" method="post">
-    <div class="testbox">
-        <form action=".html">
-          <div class="item">
-            <h1 style="color: black;">Registo Cliente</h1>
-          </div>  
-          <br>
-          <br>
-
-          <div class="item">
-            <p>Primeiro Nome</p>
-            <input type="text" name="Cl_nome" required/>
-          </div>
-
-          <div class="item">
-            <p>Nome do Meio</p>
-            <input type="text" name="Cl_nomeMeio"/>
-          </div>
-
-          <div class="item">
-            <p>Apelido</p>
-            <input type="text" name="Cl_apelido" required/>
-          </div>
-
-          <div class="item">
-            <p>Género</p>
-            <select required name="Cl_genero">
-              <option value=""></option>
-              <option value="1">F</option>
-              <option value="2">M</option>
-            </select>
-          </div>
-
-          <div class="item">
-            <p>Data Nascimento</p>
-            <input type="date" name="Cl_dataNasc" required/>
-          </div>
-            
-          <div class="item">
-            <p>E-mail</p>
-            <input type="text" name="Cl_Email" required/>
-          </div>
-
-          <div class="item">
-            <p>Nº Telemóvel</p>
-            <input type="text" name="Cl_Telemovel" required/>
-          </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-
-          <div class="btn-block">
-            <button type="submit" onclick="alerts()">Submeter</button>
-          </div>
-
-          
-
-        
-    </div>
-  </form>
-</body>
-
+        </form>
+  </body>
 </html>
