@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>RIDE-U | Login</title>
+        link(rel="stylesheet",href="/stylesheets/login.css")
+        link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css")
+        script( src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js")
+        script( src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js")
+</head>
+
+<body>
+        <main class="container">
+            <img src="images/logoride.jpg" type="image/jpg">
+            <h2>Login</h2>
+            <form action="/loginCon" method="post">
+                <div class="input-field">
+                    input(type="text" name="email" id="Cl_email" placeholder="E-mail")
+                    <div class="underline"></div>
+                </div>
+                <div class="input-field">
+                    input(type="password" name="password" id="Cl_password" placeholder="Password")
+                    <div class="underline"></div>
+                </div>
+                <div class="LoginButton">
+                    <input type="submit" value="Login"/>
+                </div>
+            </form>
+        </main>
+</body>
+</html>
