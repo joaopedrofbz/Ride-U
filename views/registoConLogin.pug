@@ -10,9 +10,9 @@
     link( rel="stylesheet" href="stylesheets/styles.css")
     link( rel="stylesheet" href="stylesheets/formulario.css")
 </head>
-<body> 
+  <body> 
     <header class="header" id="header">
-      <nav class="nav container">
+        <nav class="nav container">
         <a href="#" class="nav__logo">
           <img src="images/logoride.jpg" alt="" class="nav__logo-img">Ride-U
         </a>
@@ -35,61 +35,29 @@
           <div class="nav__close" id="nav-close">
             <i class='bx bx-x'></i>
           </div>
-          <div class="nav__toggle" id="nav-toggle">
-            <i class='bx bx-grid-alt'></i>
-          </div>
-      </nav>
-    </header>
+        </div>
+        <div class="nav__toggle" id="nav-toggle">
+          <i class='bx bx-grid-alt'></i>
+        </div>
+    </nav>
+  </header>
     <div class="testbox">
-        <form action="/registrarCon" method="post">
+        <form action="/registrarConLogin" method="post">
           <div class="item">
             <h1 style="color: black;">Registo Condutor</h1>
           </div>  
           <br>
-          <br>
+          <br>  
           <div class="item">
-            <p>Data Nascimento</p>
-            <input type="date" name="dataNasc" required/>
+            <p>Email</p>
+            <input type="text" name="email" required/>
           </div>
           <div class="item">
-            <p>Género</p>
-            <select required name="genero">
-              <option value=""></option>
-              <option value="F">F</option>
-              <option value="M">M</option>
-            </select>
-          </div>
-          <div class="item">
-            <p>Número Cartão Cidadão</p>
-            <input type="text" name="CC" required/>
-          </div>
-            
-          <div class="item">
-            <p>NIF</p>
-            <input type="text" name="NIF" required/>
-          </div>
-          <div class="item">
-            <p>Primeiro Nome</p>
-            <input type="text" name="nome" required/>
-          </div>
-          <div class="item">
-            <p>Nome do Meio</p>
-            <input type="text" name="nomeMeio"/>
-          </div>
-          <div class="item">
-            <p>Apelido</p>
-            <input type="text" name="apelido" required/>
-          </div>
-          <div class="item">
-            <p>Nº Telemóvel</p>
-            <input type="text" name="telemovel" required/>
-          </div>
-          <div class="item">
-            <p>Número Licença Transporte</p>
-            <input type="text" name="licTransp" required/>
+            <p>Password</p>
+            <input type="text" name="password" required/>
           </div>
           <div class="btn-block">
-            <button type="submit" onclick="alerts()">Seguinte</button>
+            <button type="submit" onclick="alerts()">Registar</button>
           </div>
         </form>
     </div>

@@ -65,7 +65,12 @@ router.post('/registrarCon', function (req, res, next) { //Pede os dados pessoai
         .query('INSERT INTO Condutor VALUES (@dataNasc,@genero,@CC,@NIF,@nome,@nomeMeio,@apelido,@telemovel,@licTransp)', function (err, result) {
             console.log("result"+JSON.stringify(result))
             console.log("err"+JSON.stringify(err))
-            res.redirect('/registrarConLogin')
+
+            if(result.rowsAffected> 0){              
+                res.redirect('/registrarConLogin');
+            } else {
+                res.redirect('/registrarCon');
+            } 
         });
 });
 
@@ -80,7 +85,11 @@ router.post('/registrarConLogin', function (req, res, next) { //Pede os dados de
         .query('INSERT INTO Conlogin VALUES (@email, @password,NULL)', function (err, result) {
             console.log("result"+JSON.stringify(result))
             console.log("err"+JSON.stringify(err))
-            res.redirect('/registrarConLogin2FA')
+            if(result.rowsAffected> 0){              
+                res.redirect('/registrarConLogin2FA');
+            } else {
+                res.redirect('/registrarConlogin');
+            } 
         });
 });
 
@@ -94,30 +103,34 @@ router.post('/registrarConLogin2FA', function (req, res, next) { //Pede os dados
         .query('INSERT INTO Conlogin VALUES (@email, @password)', function (err, result) {
             console.log("result"+JSON.stringify(result))
             console.log("err"+JSON.stringify(err))
-            res.redirect('/registrarCartaCond')
+            res.redirect('/registrarconCartaCond')
         });
 });
 
-router.get('/registrarCartaCond', function (req, res, next) { // Renderiza a pagina html
+router.get('/registrarconCartaCond', function (req, res, next) { // Renderiza a pagina html
     res.render('registrarCartaCond');
 })
 
-router.post('/registrarCartaCond', function (req, res, next) { //Pede os dados da carta condução
+router.post('/registrarconCartaCond', function (req, res, next) { //Pede os dados da carta condução
     var request = new sql.Request();
-    request.input('numero', sql.VarChar(20), req.body.numero)
+    request.input('numero', sql.VarChar(12), req.body.numero)
         .input('dataEmissao', sql.Date, req.body.dataEmissao)
         .query('INSERT INTO CartaConducao VALUES (@numero,@dataEmissao)', function (err, result) {
             console.log("result"+JSON.stringify(result))
             console.log("err"+JSON.stringify(err))
-            res.redirect('/registrarConCarro')
+            if(result.rowsAffected> 0){              
+                res.redirect('/registrarconCarro');
+            } else {
+                res.redirect('/registrarconCartaCond');
+            } 
         });
 });
 
-router.get('/registrarConCarro', function (req, res, next) { // Renderiza a pagina html
-    res.render('registoConCarro');
+router.get('/registrarconCarro', function (req, res, next) { // Renderiza a pagina html
+    res.render('registrarCarro');
 })
 
-router.post('/registrarConCarro', function (req, res, next) { //Pede os dados do carro do cond e insere na bd
+router.post('/registrarconCarro', function (req, res, next) { //Pede os dados do carro do cond e insere na bd
     var request = new sql.Request();
     request.input('marca', sql.VarChar(20), req.body.marca)
         .input('cor', sql.VarChar(20), req.body.cor)
@@ -130,7 +143,11 @@ router.post('/registrarConCarro', function (req, res, next) { //Pede os dados do
         .query('INSERT INTO Carro VALUES (@marca,@cor,@combustivel,@matricula,@lugares,@DataRegisto,@modelo,@dua)', function (err, result) {
             console.log("result"+JSON.stringify(result))
             console.log("err"+JSON.stringify(err))
-            res.redirect('/registar')
+            if(result.rowsAffected> 0){              
+                res.redirect('/loginCon')
+            } else {
+                res.redirect('/registrarCarro');
+            } 
         });
 });
 
