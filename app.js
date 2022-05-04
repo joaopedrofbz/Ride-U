@@ -27,5 +27,6 @@ app.use(session({
 sql.connect(con)
    .then(conn => global.conn = conn)
    .catch(err => console.log(err));
+   
 
 module.exports = app;

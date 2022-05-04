@@ -31,18 +31,24 @@ router.get('/registrarCL', function (req, res, next) { // tentar integrar uma pa
     res.render('registoCliente');
 })
 router.post('/registrarCL', function (req, res, next) {
-    
+    console.log("request = " + JSON.stringify(req.body));
     var request = new sql.Request();
-    request.input('CldataNasc', sql.Date, req.body.CldataNasc)
-        .input('Clnome', sql.VarChar(20), req.body.clnome)
+    try {
+        request.input('CldataNasc', sql.Date, req.body.CldataNasc)
+        .input('Clnome', sql.VarChar(20), req.body.Clnome)
         .input('ClnomeMeio', sql.VarChar(20), req.body.ClnomeMeio)
         .input('Clapelido',sql.VarChar(20), req.body.Clapelido)
         .input('Clgenero', sql.Char(1), req.body.Clgenero)
         .input('ClTelemovel', sql.Int, req.body.ClTelemovel)
-        .input('Clemail', sql.VarChar(255), req.body.Clemail)
-        .query('INSERT INTO Cliente VALUES (@CldataNasc, @Clnome,@ClnomeMeio,@Clapelido,@Clgenero,@ClTelemovel,@Cllemail)', function (err, result) {
+        .query('INSERT INTO Cliente VALUES (@CldataNasc,@Clnome,@ClnomeMeio,@Clapelido,@Clgenero,@ClTelemovel)', function (err, result) {
+            console.log("result=" + JSON.stringify(result))
+            console.log("err=" + err)
             res.redirect('/')
         });
+    } catch (error) {
+        console.log("error=" + error)
+    }
+    
 });
 
 router.get('/registrarCon', function (req, res, next) { // tentar integrar uma pagina html
@@ -50,42 +56,39 @@ router.get('/registrarCon', function (req, res, next) { // tentar integrar uma p
 })
 
 router.post('/registrarCon', function (req, res, next) {
-    
     var request = new sql.Request();
-    request.input('CldataNasc', sql.Date, req.body.CldataNasc)
-        .input('Clnome', sql.VarChar(20), req.body.clnome)
-        .input('ClnomeMeio', sql.VarChar(20), req.body.ClnomeMeio)
-        .input('Clapelido',sql.VarChar(20), req.body.Clapelido)
-        .input('Clgenero', sql.Char(1), req.body.Clgenero)
-        .input('ClTelemovel', sql.Int, req.body.ClTelemovel)
-        .input('Clemail', sql.VarChar(255), req.body.Clemail)
-        .query('INSERT INTO Cliente VALUES (@CldataNasc, @Clnome,@ClnomeMeio,@Clapelido,@Clgenero,@ClTelemovel,@Cllemail)', function (err, result) {
+    request.input('dataNasc', sql.Date, req.body.dataNasc)
+        .input('genero', sql.Char(1), req.body.genero)
+        .input('CC', sql.VarChar(8), req.body.CC)
+        .input('NIF', sql.Int, req.body.NIF)
+        .input('nome', sql.VarChar(20), req.body.nome)
+        .input('nomeMeio', sql.VarChar(20), req.body.nomeMeio)
+        .input('apelido',sql.VarChar(20), req.body.apelido)
+        .input('telemovel', sql.Int, req.body.telemovel)  
+        .input('licTransp', sql.Int, req.body.licTransp)      
+        .query('INSERT INTO Condutor VALUES (@dataNasc,@genero,@CC,@NIF,@nome,@nomeMeio,@apelido,@telemovel,@licTransp)', function (err, result) {
+            console.log("result"+JSON.stringify(result))
+            console.log("err"+JSON.stringify(err))
             res.redirect('/')
         });
 });
 
-/*
+
 router.post('/login', async function (req, res, next) { //test login
+    console.log("result"+JSON.stringify(req.body))
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
         .input('password', sql.VarChar(255), req.body.password)
-        .query('select clo_email,clo_pass from cl_login where clo_email=@email and clo_pass=@password', function (err, result) {
-
-            if (req.session.email == req.body.email && req.session.password == req.body.password) {
-
+        .query('select clo_email,clo_pass from cllogin where clo_email=@email and clo_pass=@password', function (err, result) {
+            console.log("result"+JSON.stringify(result))
+            console.log("err"+JSON.stringify(err))
+            if(result.rowsAffected> 0){
+                            
                 res.redirect('/');
             } else {
                 res.redirect('/login');
             }
-        });
-})
-*/
-router.post('/login', async function (req, res, next) { //test login
-    var request = new sql.Request();
-    request.input('email', sql.VarChar(255), req.body.email)
-        .input('password', sql.VarChar(255), req.body.password)
-        .query('insert into cllogin values (@email,@password)', function (err, result) {
-            res.redirect('/login');
+            
         });
 })
 
