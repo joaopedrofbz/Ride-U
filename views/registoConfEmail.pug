@@ -42,28 +42,18 @@
     </nav>
   </header>
     <div class="testbox">
-        <form action="/registrarConLogin2FA" method="post">
+        <form action="/registrarConfEmail" method="post">
           <div class="item">
-            <h1 style="color: black;">Adicionar 2FA para proteção adicional</h1>
+            <h1 style="color: black;">Confirmar o seu Email</h1>
           </div>  
           <br>
           <br>
           <div class="item">
-            <h2 style="color: black;">Utilize o qr code no seu autenticador google</h2>
-          </div>
-          <br>
-          <br>
-          <br>
-          <br>
-          <div class="item">
-            <img src=${data_url} ><br>
-            <p>or add manually: ${secret.base32}</p>
-          </div>
-          <br>
-          <br>  
+            <h2 style="color: black;">Enviamos lhe um email com um codigo </h2>
+          </div> 
           <div class="item">
             <p>Codigo apresentado</p>
-            <input type="text" name="secret" required/>
+            <input type="text" name="codigo" required/>
           </div>
           <div class="btn-block">
             <button type="submit" onclick="alerts()">Seguinte</button>

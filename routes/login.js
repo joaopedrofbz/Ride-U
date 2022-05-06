@@ -3,11 +3,11 @@ var router = express.Router();
 var con = require('../Database/conn');
 const sql = require('mssql');
 const speakeasy = require('speakeasy');
-
 const QRCode = require('qrcode');
 const secret = speakeasy.generateSecret();
 
 const nodemailer = require('nodemailer');
+const { request } = require('express');
 function execSQLQuery(sqlQry, res) {
     global.conn.request()
         .query(sqlQry)
@@ -82,6 +82,8 @@ router.get('/registrarConLogin', function (req, res, next) { // Renderiza a pagi
     res.render('registoConLogin');
 })
 
+const random =Math.floor(Math.random()*9999)+100;
+
 router.post('/registrarConLogin', function (req, res, next) { //Pede os dados de login do cond e insere na bd
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
@@ -91,53 +93,52 @@ router.post('/registrarConLogin', function (req, res, next) { //Pede os dados de
             console.log("err" + JSON.stringify(err))
 
             if (result.rowsAffected != 0) {
-                const output = `<p>Email de Verificação Conta RideU</p>`;
-
-                // create reusable transporter object using the default SMTP transport
+               
+                const output = `<p>Email de Verificação Conta RideU</p>
+                <p>Introduza o código abaixo na sua aplicação RideU</p><br> ${random }</p>`;
                 let transporter = nodemailer.createTransport({
                     host: 'smtp.office365.com',
                     port: 587,
                     secure: false,
                     auth: {
-                        user: 'Rideu@outlook.pt', // generated ethereal user
-                        pass: 'PaoPaoPao'  // generated ethereal password
+                        user: 'Rideu@outlook.pt', 
+                        pass: 'PaoPaoPao'  
                     },
                     tls: {
                         rejectUnauthorized: false
                     }
                 });
 
-                // setup email data with unicode symbols
                 let mailOptions = {
-                    from: '"Ride-U" <Rideu@outlook.pt>', // sender address
-                    to: 'brito.ramos2011@gmail.com', // sender addresslist of receivers
-                    subject: 'Ride-U| Verificar Email', // Subject line
-                    text: 'Hello world?', // plain text body
-                    html: output // html body
+                    from: '"Ride-U" <Rideu@outlook.pt>',
+                    to: req.body.email,
+                    subject: 'Ride-U| Verificar Email',
+                    html: output 
                 };
 
-                // send mail with defined transport object
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (error) {
                         return console.log(error);
                     }
                     console.log('Message sent: %s', info.messageId);
                     console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-                    res.redirect('/registrarconCartaCond')
                 });
-                res.redirect('/registrarConLogin2FA');
+                res.redirect('/registrarConfEmail');
             } else {
                 res.redirect('/registrarConlogin');
             }
         });
 });
 
-router.get('/registrarConLogin2FA', function (req, res, next) { // Renderiza a pagina html
-    res.render('registoConLogin2FA');
+router.get('/registrarConfEmail', function (req, res, next) { // Renderiza a pagina html
+    res.render('registoConfEmail');
 })
 
-router.post('/registrarConLogin2FA', function (req, res, next) { //Pede os dados pessoais do cond e insere na bd
-
+router.post('/registrarConfEmail', function (req, res, next) { //Pede os dados pessoais do cond e insere na bd
+  
+    if(random==req.body.codigo) {
+        res.redirect('/registrarconCartaCond');
+    }
 
 });
 
