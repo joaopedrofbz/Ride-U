@@ -42,22 +42,28 @@
     </nav>
   </header>
     <div class="testbox">
-        <form action="/registrarConLogin" method="post">
+        <form action="/registrarCon2FA" method="post">
           <div class="item">
-            <h1 style="color: black;">Registo Condutor</h1>
+            <h1 style="color: black;">Proteção Adicional 2FA</h1>
           </div>  
           <br>
-          <br>  
+          <br>
+          <div class="item" >
+            <h2 style="color: black;">Digitalize o QR Code ou introduza o codigo manualmente</h2>
+          </div> 
           <div class="item">
-            <p>Email</p>
-            <input type="text" name="email" required/>
-          </div>
+            img(src=codigo)
+            p=manual
+          </div> 
           <div class="item">
-            <p>Password</p>
-            <input type="password" name="password" required/>
+            <p>Codigo apresentado no seu atenticador</p>
+            <input type="number" name="token" required/>
           </div>
           <div class="btn-block">
-            <button type="submit" onclick="alerts()">Registar</button>
+            <button type="submit" >Seguinte</button>
+          </div>
+          <div class="btn-block">
+            <a href="/registrarconCartaCond" class="btn-block">Ignorar</a>
           </div>
         </form>
     </div>

@@ -3,11 +3,9 @@ var router = express.Router();
 var con = require('../Database/conn');
 const sql = require('mssql');
 const speakeasy = require('speakeasy');
-const QRCode = require('qrcode');
-const secret = speakeasy.generateSecret();
-
+const qrcode = require('qrcode');
 const nodemailer = require('nodemailer');
-const { request } = require('express');
+
 function execSQLQuery(sqlQry, res) {
     global.conn.request()
         .query(sqlQry)
@@ -82,7 +80,7 @@ router.get('/registrarConLogin', function (req, res, next) { // Renderiza a pagi
     res.render('registoConLogin');
 })
 
-const random =Math.floor(Math.random()*9999)+100;
+const random = Math.floor(Math.random() * 9999) + 100;
 
 router.post('/registrarConLogin', function (req, res, next) { //Pede os dados de login do cond e insere na bd
     var request = new sql.Request();
@@ -93,16 +91,15 @@ router.post('/registrarConLogin', function (req, res, next) { //Pede os dados de
             console.log("err" + JSON.stringify(err))
 
             if (result.rowsAffected != 0) {
-               
                 const output = `<p>Email de Verificação Conta RideU</p>
-                <p>Introduza o código abaixo na sua aplicação RideU</p><br> ${random }</p>`;
+                <p>Introduza o código abaixo na sua aplicação RideU</p><br> ${random}</p>`;
                 let transporter = nodemailer.createTransport({
                     host: 'smtp.office365.com',
                     port: 587,
                     secure: false,
                     auth: {
-                        user: 'Rideu@outlook.pt', 
-                        pass: 'PaoPaoPao'  
+                        user: 'Rideu@outlook.pt',
+                        pass: 'PaoPaoPao'
                     },
                     tls: {
                         rejectUnauthorized: false
@@ -113,7 +110,7 @@ router.post('/registrarConLogin', function (req, res, next) { //Pede os dados de
                     from: '"Ride-U" <Rideu@outlook.pt>',
                     to: req.body.email,
                     subject: 'Ride-U| Verificar Email',
-                    html: output 
+                    html: output
                 };
 
                 transporter.sendMail(mailOptions, (error, info) => {
@@ -135,10 +132,37 @@ router.get('/registrarConfEmail', function (req, res, next) { // Renderiza a pag
 })
 
 router.post('/registrarConfEmail', function (req, res, next) { //Pede os dados pessoais do cond e insere na bd
-  
-    if(random==req.body.codigo) {
-        res.redirect('/registrarconCartaCond');
+    if (random == req.body.codigo) {
+        res.redirect('/registrarcon2FA');
     }
+
+});
+var temp_secret = speakeasy.generateSecret({ length: 20 });
+router.get('/registrarCon2FA', function (req, res, next) { // Renderiza a pagina html
+
+
+    console.log(temp_secret);
+    qrcode.toDataURL(temp_secret.otpauth_url, function (err, data) {
+        res.render('registoCon2FA', { codigo: data, manual: temp_secret.base32 });
+    });
+
+})
+
+router.post('/registrarCon2FA', function (req, res, next) { //Pede os dados pessoais do cond e insere na bd
+
+    const verify = speakeasy.totp.verify({
+        secret: temp_secret,
+        encoding: 'base32',
+        token: req.body.token,
+        window: 0
+    })
+    if (verify) {
+        res.redirect('/registrarconCartaCond')
+    } else {
+        res.redirect('/registrarCon2FA')
+    }
+
+
 
 });
 
