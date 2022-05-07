@@ -42,18 +42,25 @@
     </nav>
   </header>
     <div class="testbox">
-        <form action="/registrarConLogin2FA" method="post">
+        <form action="/registrarCon2FA" method="post">
           <div class="item">
-            <h1 style="color: black;">Adicionar 2FA para proteção adicional</h1>
+            <h1 style="color: black;">Proteção Adicional 2FA</h1>
           </div>  
           <br>
-          <br>  
+          <br>
+          <div class="item" >
+            <h2 style="color: black;">Digitalize o QR Code ou introduza o codigo manualmente</h2>
+          </div> 
           <div class="item">
-            <p>Codigo apresentado</p>
-            <input type="text" name="secret" required/>
+            img(src=codigo)
+            p=manual
+          </div> 
+          <div class="item">
+            <p>Codigo apresentado no seu atenticador</p>
+            <input type="number" name="token" required/>
           </div>
           <div class="btn-block">
-            <button type="submit" onclick="alerts()">Seguinte</button>
+            <button type="submit" >Seguinte</button>
           </div>
           <div class="btn-block">
             <a href="/registrarconCartaCond" class="btn-block">Ignorar</a>

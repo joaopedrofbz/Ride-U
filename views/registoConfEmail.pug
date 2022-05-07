@@ -42,58 +42,21 @@
     </nav>
   </header>
     <div class="testbox">
-        <form action="/registrarconCarro" method="post">
+        <form action="/registrarConfEmail" method="post">
           <div class="item">
-            <h1 style="color: black;">Registar Carro</h1>
+            <h1 style="color: black;">Confirmar o seu Email</h1>
           </div>  
           <br>
-          <br>  
+          <br>
           <div class="item">
-            <p>Marca do Carro</p>
-            <input type="text" name="marca" required/>
-          </div>
+            <h2 style="color: black;">Enviamos lhe um email com um codigo </h2>
+          </div> 
           <div class="item">
-            <p>Cor</p>
-            <input type="text" name="cor" required/>
-          </div>
-          <div class="item">
-            <p>Combustivel</p>
-            <select name="combustivel" required>
-              <option value=""></option>
-              <option value="Gasoleo">Gasóleo</option>
-              <option value="Gasolina">Gasolina</option>
-              <option value="Eletrico">Elétrico</option>
-            </select>
-          </div>
-          <div class="item">
-            <p>Matricula</p>
-            <input type="text" name="matricula" required/>
-          </div>
-          <div class="item">
-            <p>Lugares</p>
-            <select name="lugares" required>
-              <option value=""></option>
-              <option value="2">2</option>
-              <option value="5">5</option>
-              <option value="7">7</option>
-              <option value="9">9</option>
-              <option value="12">12</option>
-            </select>
-          </div>
-          <div class="item">
-            <p>Data de Registo</p>
-            <input type="date" name="DataRegisto" required/>
-          </div>
-          <div class="item">
-            <p>Modelo</p>
-            <input type="text" name="modelo" required/>
-          </div>
-          <div class="item">
-            <p>Dua (Documento Unico Automovel)</p>
-            <input type="text" name="dua" required/>
+            <p>Codigo apresentado</p>
+            <input type="text" name="codigo" required/>
           </div>
           <div class="btn-block">
-            <button type="submit" onclick="alerts()">Finalizar</button>
+            <button type="submit" onclick="alerts()">Seguinte</button>
           </div>
         </form>
     </div>
