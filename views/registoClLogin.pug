@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIDE-U | Registar Login</title>
+    link( href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+    link( rel="stylesheet" href="stylesheets/styles.css")
+    link( rel="stylesheet" href="stylesheets/formulario.css")
+</head>
+  <body> 
+    <header class="header" id="header">
+        <nav class="nav container">
+        <a href="/home" class="nav__logo">
+          <img src="images/logoride.jpg" alt="" class="nav__logo-img">Ride-U
+        </a>
+    </nav>
+  </header>
+    <div class="testbox">
+        <form action="/registrarClLogin" method="post">
+          <div class="item">
+            <h1 style="color: black;">Introduzir Dados Login</h1>
+          </div>  
+          <br>
+          <br>  
+          <div class="item">
+            <p>Email</p>
+            <input type="text" name="email" required/>
+          </div>
+          <div class="item">
+            <p>Password</p>
+            <input type="password" name="password" required/>
+          </div>
+          <div class="btn-block">
+            <button type="submit" onclick="alerts()">Registar</button>
+          </div>
+        </form>
+    </div>
+</body>
+
+</html>

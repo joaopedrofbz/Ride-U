@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIDE-U | Criar Registo</title>
+    link( href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+    link(rel="stylesheet" href="stylesheets/styles.css")
+    link(rel="stylesheet" href="stylesheets/formulario.css")
+</head>
+
+<body>
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="" class="nav__logo">
+                <img src="images/logoride.jpg" alt="" class="nav__logo-img">Ride-U
+            </a>
+        </nav>
+    </header>
+
+    <div class="testbox">
+        <form action="/addMetodoPag" method="post">
+
+            <div class="item">
+                <h1 style="color: black;">Adicionar Método de Pagamento</h1>
+            </div>   
+            <br>
+            <br>
+
+            <div class="item">
+                <p>Ano Validade</p>
+                <select required name="ano">
+                    <option value=""></option>
+                    <option value="1">2022</option>
+                    <option value="2">2023</option>
+                    <option value="3">2024</option>
+                    <option value="4">2025</option>
+                    <option value="5">2026</option>
+                    <option value="6">2027</option>
+                    <option value="7">2028</option>
+                    <option value="8">2029</option>
+                    <option value="9">2030</option>
+                </select>
+            </div>
+
+            <div class="item">
+                <p>Mês Validade</p>
+                <select required name="mes">
+                    <option value=""></option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+            </div>
+
+            <div class="item">
+                <p>Número do Cartão</p>
+                <input type="text" name="numCartao" required/>
+            </div>
+
+            <div class="item">
+                <p>CVV</p>
+                <input type="text" name="CVV"/>
+            </div>
+
+            <div class="btn-block">
+                <button type="submit">Submeter</button>
+            </div>
+        </form>
+</body>
+</html>
