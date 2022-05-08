@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIDE-U | Registar Condutor</title>
+    link( href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+    link( rel="stylesheet" href="stylesheets/styles.css")
+    link( rel="stylesheet" href="stylesheets/formulario.css")
+</head>
+  <body> 
+    <header class="header" id="header">
+        <nav class="nav container">
+        <a href="#" class="nav__logo">
+          <img src="images/logoride.jpg" alt="" class="nav__logo-img">Ride-U
+        </a>
+        <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+            <li class="nav__item">
+              <a href="#home" class="nav__link active-link">Home</a>
+            </li>
+            <li class="nav__item">
+              <a href="tickets.html" class="nav__link">Bilhetes</a>
+            </li>
+            <li class="nav__item">
+              <a href="#trick" class="nav__link">Dashboard</a>
+            </li>
+            <li class="nav__item">
+              <a href="#new" class="nav__link">Definições</a>
+            </li>
+            <a href="/login" class="button button--ghost">Log-in</a>
+          </ul>
+          <div class="nav__close" id="nav-close">
+            <i class='bx bx-x'></i>
+          </div>
+        </div>
+        <div class="nav__toggle" id="nav-toggle">
+          <i class='bx bx-grid-alt'></i>
+        </div>
+    </nav>
+  </header>
+    <div class="testbox">
+        <form action="/registrarClEmail" method="post">
+          <div class="item">
+            <h1 style="color: black;">Confirmar o seu Email</h1>
+          </div>  
+          <br>
+          <br>
+          <div class="item">
+            <h2 style="color: black;">Enviamos lhe um email com um codigo </h2>
+          </div> 
+          <div class="item">
+            <p>Codigo apresentado</p>
+            <input type="text" name="codigo" required/>
+          </div>
+          <div class="btn-block">
+            <button type="submit" onclick="alerts()">Seguinte</button>
+          </div>
+        </form>
+    </div>
+</body>
+
+</html>

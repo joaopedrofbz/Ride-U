@@ -6,32 +6,20 @@ const speakeasy = require('speakeasy');
 const qrcode = require('qrcode');
 const nodemailer = require('nodemailer');
 
-function execSQLQuery(sqlQry, res) {
-    global.conn.request()
-        .query(sqlQry)
-        .then(result => res.json(result.recordset))
-        .catch(err => res.json(err));
-}
 
-router.get('/', function (req, res, next) { // tentar integrar uma pagina html
+
+router.get('/', function (req, res, next) { 
     res.render('splash');
 });
-router.get('/home', function (req, res, next) { // tentar integrar uma pagina html
+router.get('/home', function (req, res, next) { 
     res.render('home');
-
-
 });
 
-router.get('/clienteslog', (req, res) => {
-    execSQLQuery('SELECT * FROM Cllogin', res);
-})
-
-//registar cliente
-router.get('/registrarCL', function (req, res, next) { // tentar integrar uma pagina html
+router.get('/registrarCL', function (req, res, next) { 
     res.render('registoCliente');
 })
 
-router.post('/registrarCL', function (req, res, next) { //Pede os dados pessoais do cond e insere na bd
+router.post('/registrarCL', function (req, res, next) { 
     var request = new sql.Request();
     request.input('dataNasc', sql.Date, req.body.dataNasc)
         .input('nome', sql.VarChar(20), req.body.nome)
@@ -43,7 +31,7 @@ router.post('/registrarCL', function (req, res, next) { //Pede os dados pessoais
             console.log("result"+JSON.stringify(result))
             console.log("err"+JSON.stringify(err))
 
-            if(result.rowsAffected> 0){              
+            if(result.rowsAffected !=null) {              
                 res.redirect('/registrarClLogin');
             } else {
                 res.redirect('/registrarCL');
@@ -51,27 +39,70 @@ router.post('/registrarCL', function (req, res, next) { //Pede os dados pessoais
         });
 });
 
-router.get('/registrarClLogin', function (req, res, next) { // Renderiza a pagina html
+router.get('/registrarClLogin', function (req, res, next) { 
     res.render('registoClLogin');
 })
 
-router.post('/registrarClLogin', function (req, res, next) { //Pede os dados de login do cond e insere na bd
+router.post('/registrarClLogin', function (req, res, next) { 
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
         .input('password', sql.VarChar(255), req.body.password)     
         .query('INSERT INTO Cllogin VALUES (@email, @password,NULL)', function (err, result) {
             console.log("result"+JSON.stringify(result))
             console.log("err"+JSON.stringify(err))
-            if(result.rowsAffected> 0){              
-                res.redirect('/registrarClLogin2FA');
+
+            if (result.rowsAffected != null) {
+                const output = `<p>Email de Verificação Conta RideU</p>
+                <p>Introduza o código abaixo na sua aplicação RideU</p><br> ${random}</p>`;
+                let transporter = nodemailer.createTransport({
+                    host: 'smtp.office365.com',
+                    port: 587,
+                    secure: false,
+                    auth: {
+                        user: 'Rideu@outlook.pt',
+                        pass: 'PaoPaoPao'
+                    },
+                    tls: {
+                        rejectUnauthorized: false
+                    }
+                });
+
+                let mailOptions = {
+                    from: '"Ride-U" <Rideu@outlook.pt>',
+                    to: req.body.email,
+                    subject: 'Ride-U| Verificar Email',
+                    html: output
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        return console.log(error);
+                    }
+                    console.log('Message sent: %s', info.messageId);
+                    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+                });
+                res.redirect('/registrarClEmail');
             } else {
-                res.redirect('/registrarClLogin');
-            } 
+                res.redirect('/registrarCllogin');
+            }
         });
 });
 
+router.get('/registrarClEmail', function (req, res, next) { // Renderiza a pagina html
+    res.render('registoClEmail');
+})
+
+router.post('/registrarClEmail', function (req, res, next) { //Pede os dados pessoais do cond e insere na bd
+    if (random == req.body.codigo) {
+        res.redirect('/registrarClLogin2FA');
+    }
+});
+
 router.get('/registrarClLogin2FA', function (req, res, next) { // Renderiza a pagina html
-    res.render('registoClLogin2FA');
+    console.log(temp_secret);
+    qrcode.toDataURL(temp_secret.otpauth_url, function (err, data) {
+        res.render('registoClLogin2FA', { codigo: data, manual: temp_secret.base32 });
+    });
 })
 
 router.post('/registrarClLogin2FA', function (req, res, next) { //Pede os dados pessoais do cond e insere na bd
@@ -92,9 +123,9 @@ router.post('/adicionarMetPag', function (req, res, next) { //Pede os dados da c
     var request = new sql.Request();
     request.input('ano', sql.Int, req.body.ano)
         .input('mes', sql.Int, req.body.mes)
-        .input('numCartao', sql.VarChar(15), req.body.mes)
-        .input('CVV', sql.Int, req.body.mes)
-        .query('INSERT INTO CartaConducao VALUES (@ano,@mes,@numCartao,@CVV)', function (err, result) {
+        .input('numCartao', sql.VarChar(15), req.body.numCartao)
+        .input('cvv', sql.Int, req.body.cvv)
+        .query('INSERT INTO CartaConducao VALUES (@ano,@mes,@numCartao,@cvv)', function (err, result) {
             console.log("result"+JSON.stringify(result))
             console.log("err"+JSON.stringify(err))
             if(result.rowsAffected> 0){              
@@ -125,7 +156,7 @@ router.post('/registrarCon', function (req, res, next) { //Pede os dados pessoai
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
 
-            if (result.rowsAffected > 0) {
+            if (result.rowsAffected !=null) {
                 res.redirect('/registrarConLogin');
             } else {
                 res.redirect('/registrarCon');
@@ -147,7 +178,7 @@ router.post('/registrarConLogin', function (req, res, next) { //Pede os dados de
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
 
-            if (result.rowsAffected != 0) {
+            if (result.rowsAffected != null) {
                 const output = `<p>Email de Verificação Conta RideU</p>
                 <p>Introduza o código abaixo na sua aplicação RideU</p><br> ${random}</p>`;
                 let transporter = nodemailer.createTransport({
@@ -196,7 +227,6 @@ router.post('/registrarConfEmail', function (req, res, next) { //Pede os dados p
 });
 var temp_secret = speakeasy.generateSecret({ length: 20 });
 router.get('/registrarCon2FA', function (req, res, next) { // Renderiza a pagina html
-
 
     console.log(temp_secret);
     qrcode.toDataURL(temp_secret.otpauth_url, function (err, data) {
