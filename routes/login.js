@@ -5,51 +5,61 @@ const sql = require('mssql');
 const speakeasy = require('speakeasy');
 const qrcode = require('qrcode');
 const nodemailer = require('nodemailer');
+var session = require('express-session');
+const oneDay = 1000 * 60 * 60 * 24;
 
+router.use(
+    session({
+        secret: 'stringsecreta',
+        resave: true,
+        saveUninitialized: false,
+        cookie: { maxAge: oneDay },
+        resave: false
+    })
+);
 
-
-router.get('/', function (req, res, next) { 
+router.get('/', function (req, res, next) {
     res.render('splash');
 });
-router.get('/home', function (req, res, next) { 
+router.get('/home', function (req, res, next) {
     res.render('home');
 });
 
-router.get('/registrarCL', function (req, res, next) { 
+router.get('/registrarCL', function (req, res, next) {
     res.render('registoCliente');
 })
 
-router.post('/registrarCL', function (req, res, next) { 
+router.post('/registrarCL', function (req, res, next) {
     var request = new sql.Request();
     request.input('dataNasc', sql.Date, req.body.dataNasc)
         .input('nome', sql.VarChar(20), req.body.nome)
         .input('nomeMeio', sql.VarChar(20), req.body.nomeMeio)
-        .input('apelido',sql.VarChar(20), req.body.apelido)
+        .input('apelido', sql.VarChar(20), req.body.apelido)
         .input('genero', sql.Char(1), req.body.genero)
         .input('Telemovel', sql.Int, req.body.Telemovel)
         .query('INSERT INTO Cliente VALUES (@dataNasc,@nome,@nomeMeio,@apelido,@genero,@Telemovel)', function (err, result) {
-            console.log("result"+JSON.stringify(result))
-            console.log("err"+JSON.stringify(err))
+            console.log("result" + JSON.stringify(result))
+            console.log("err" + JSON.stringify(err))
 
-            if(result.rowsAffected !=null) {              
+            if (result.rowsAffected != null) {
                 res.redirect('/registrarClLogin');
             } else {
                 res.redirect('/registrarCL');
-            } 
+            }
         });
 });
 
-router.get('/registrarClLogin', function (req, res, next) { 
+router.get('/registrarClLogin', function (req, res, next) {
     res.render('registoClLogin');
 })
 
-router.post('/registrarClLogin', function (req, res, next) { 
+router.post('/registrarClLogin', function (req, res, next) {
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
-        .input('password', sql.VarChar(255), req.body.password)     
+        .input('password', sql.VarChar(255), req.body.password)
         .query('INSERT INTO Cllogin VALUES (@email, @password,NULL)', function (err, result) {
-            console.log("result"+JSON.stringify(result))
-            console.log("err"+JSON.stringify(err))
+            console.log("result" + JSON.stringify(result))
+            console.log("err" + JSON.stringify(err))
 
             if (result.rowsAffected != null) {
                 const output = `<p>Email de Verificação Conta RideU</p>
@@ -109,8 +119,8 @@ router.post('/registrarClLogin2FA', function (req, res, next) { //Pede os dados 
     var request = new sql.Request();                            //falta query
     request.input('secret', sql.VarChar(20), req.body.secret)
         .query('INSERT INTO Conlogin VALUES (@email, @password)', function (err, result) {
-            console.log("result"+JSON.stringify(result))
-            console.log("err"+JSON.stringify(err))
+            console.log("result" + JSON.stringify(result))
+            console.log("err" + JSON.stringify(err))
             res.redirect('/adicionarMetPag')
         });
 });
@@ -126,13 +136,13 @@ router.post('/adicionarMetPag', function (req, res, next) { //Pede os dados da c
         .input('numCartao', sql.VarChar(15), req.body.numCartao)
         .input('cvv', sql.Int, req.body.cvv)
         .query('INSERT INTO CartaConducao VALUES (@ano,@mes,@numCartao,@cvv)', function (err, result) {
-            console.log("result"+JSON.stringify(result))
-            console.log("err"+JSON.stringify(err))
-            if(result.rowsAffected> 0){              
+            console.log("result" + JSON.stringify(result))
+            console.log("err" + JSON.stringify(err))
+            if (result.rowsAffected > 0) {
                 res.redirect('/adicionarMetPag');
             } else {
                 res.redirect('/loginCl');
-            } 
+            }
         });
 });
 
@@ -156,7 +166,7 @@ router.post('/registrarCon', function (req, res, next) { //Pede os dados pessoai
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
 
-            if (result.rowsAffected !=null) {
+            if (result.rowsAffected != null) {
                 res.redirect('/registrarConLogin');
             } else {
                 res.redirect('/registrarCon');
@@ -298,12 +308,14 @@ router.post('/registrarconCarro', function (req, res, next) { //Pede os dados do
 
 });
 
-
 //////////////////////////////////////////////////////////////////////
 router.get('/loginCl', function (req, res, next) { // tentar integrar uma pagina html
     res.render('loginCl');
 })
 router.post('/loginCl', async function (req, res, next) { //test login cliente
+    session=req.session
+    session.email=req.body.email
+    console.log(session.email)
     console.log("result" + JSON.stringify(req.body))
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
@@ -311,10 +323,15 @@ router.post('/loginCl', async function (req, res, next) { //test login cliente
         .query('select clo_email,clo_password from cllogin where clo_email=@email and clo_password=@password', function (err, result) {
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
-            if (result.rowsAffected != null) {
+            console.log("session" + JSON.stringify(req.session))
+            
+            if (result.rowsAffected > 0) {
                 res.redirect('/');
             } else {
+                req.session.destroy();
+                console.log("session" + JSON.stringify(req.session))// verificar se a selão foi destruida
                 res.redirect('/loginCl');
+                
             }
         });
 })
@@ -324,16 +341,20 @@ router.get('/loginCon', function (req, res, next) { // tentar integrar uma pagin
 })
 
 router.post('/loginCon', async function (req, res, next) { //test login
-    console.log("result" + JSON.stringify(req.body))  //query
+    session=req.session
+    session.email=req.body.email
+    console.log("result" + JSON.stringify(req.body))  
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
         .input('password', sql.VarChar(255), req.body.password)
         .query('select co_email,co_password from conlogin where co_email=@email and co_password=@password', function (err, result) {
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
-            if (result.rowsAffected != null) {
+            if (result.rowsAffected > 0) {
                 res.redirect('/');
             } else {
+                req.session.destroy();
+                console.log("session" + JSON.stringify(req.session))// verificar se a selão foi destruida
                 res.redirect('/loginCon');
             }
         });
