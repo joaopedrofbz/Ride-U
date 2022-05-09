@@ -7,10 +7,11 @@ const qrcode = require('qrcode');
 const nodemailer = require('nodemailer');
 var session = require('express-session');
 const oneDay = 1000 * 60 * 60 * 24;
+const { v4: uuidv4 } = require('uuid')
 
 router.use(
     session({
-        secret: 'stringsecreta',
+        secret: uuidv4(),
         resave: true,
         saveUninitialized: false,
         cookie: { maxAge: oneDay },
@@ -118,7 +119,7 @@ router.get('/registrarClLogin2FA', function (req, res, next) { // Renderiza a pa
 router.post('/registrarClLogin2FA', function (req, res, next) { //Pede os dados pessoais do cond e insere na bd
     var request = new sql.Request();                            //falta query
     request.input('secret', sql.VarChar(20), req.body.secret)
-        .query('INSERT INTO Conlogin VALUES (@email, @password)', function (err, result) {
+        .query('UPDATE Cllogin set clo_secret=@secret where=@@IDENTITY)', function (err, result) {
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
             res.redirect('/adicionarMetPag')
@@ -258,9 +259,6 @@ router.post('/registrarCon2FA', function (req, res, next) { //Pede os dados pess
     } else {
         res.redirect('/registrarCon2FA')
     }
-
-
-
 });
 
 router.get('/registrarconCartaCond', function (req, res, next) { // Renderiza a pagina html
@@ -313,27 +311,50 @@ router.get('/loginCl', function (req, res, next) { // tentar integrar uma pagina
     res.render('loginCl');
 })
 router.post('/loginCl', async function (req, res, next) { //test login cliente
-    session=req.session
-    session.email=req.body.email
-    console.log(session.email)
-    console.log("result" + JSON.stringify(req.body))
+
+
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
         .input('password', sql.VarChar(255), req.body.password)
         .query('select clo_email,clo_password from cllogin where clo_email=@email and clo_password=@password', function (err, result) {
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
-            console.log("session" + JSON.stringify(req.session))
-            
+
             if (result.rowsAffected > 0) {
-                res.redirect('/');
+                req.session.user=req.body.email
+                res.redirect('/dashboardCl');
             } else {
-                req.session.destroy();
-                console.log("session" + JSON.stringify(req.session))// verificar se a selão foi destruida
                 res.redirect('/loginCl');
-                
             }
         });
+})
+
+router.get('/dashboardCl', function (req, res, next) { // tentar integrar uma pagina html
+    if(req.session.user){
+        console.log(req.session.user)
+        res.render('dashboardCl',{user:req.session.user});
+    }else{ 
+        res.render('loginCl')
+    }
+})
+/*
+router.get('/Metpagamento', function (req, res, next) { // tentar integrar uma pagina html
+    var request = new sql.Request();
+    request.input('email', sql.VarChar(255), req.session.user)
+        .query('select met_numcartao,met_ano,met_mes,met_cvv from cllogin where clo_email=@email and clo_password=@password', function (err, result) {
+            res.render('Vermetpagamento',{numcartao=met_numcartao})
+        }
+})
+*/
+router.get('/logout', function (req, res, next) { // tentar integrar uma pagina html
+    req.session.destroy(function (err){
+        if (err){
+            console.log(err);
+            res.send("erro");
+        }else{
+            res.redirect('/')
+        }
+    })
 })
 
 router.get('/loginCon', function (req, res, next) { // tentar integrar uma pagina html
@@ -341,9 +362,6 @@ router.get('/loginCon', function (req, res, next) { // tentar integrar uma pagin
 })
 
 router.post('/loginCon', async function (req, res, next) { //test login
-    session=req.session
-    session.email=req.body.email
-    console.log("result" + JSON.stringify(req.body))  
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
         .input('password', sql.VarChar(255), req.body.password)
@@ -351,15 +369,21 @@ router.post('/loginCon', async function (req, res, next) { //test login
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
             if (result.rowsAffected > 0) {
-                res.redirect('/');
-            } else {
-                req.session.destroy();
-                console.log("session" + JSON.stringify(req.session))// verificar se a selão foi destruida
+                req.session.user=req.body.email
+                res.redirect('/dashboardCon');
+            } else{
                 res.redirect('/loginCon');
             }
         });
 })
-
+router.get('/dashboardCon', function (req, res, next) { // tentar integrar uma pagina html
+    if(req.session.user){
+        console.log(req.session.user)
+        res.render('dashboardCon',{user:req.session.user});
+    }else{ 
+        res.render('loginCon')
+    }
+})
 
 
 module.exports = router; 
