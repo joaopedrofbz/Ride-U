@@ -38,7 +38,7 @@ router.post('/registrarCL', function (req, res, next) {
         .input('apelido', sql.VarChar(20), req.body.apelido)
         .input('genero', sql.Char(1), req.body.genero)
         .input('Telemovel', sql.Int, req.body.Telemovel)
-        .query('INSERT INTO Cliente VALUES (@dataNasc,@nome,@nomeMeio,@apelido,@genero,@Telemovel)', function (err, result) {
+        .execute('spRegistarcl', function (err, result) {
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
 
@@ -58,7 +58,7 @@ router.post('/registrarClLogin', function (req, res, next) {
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
         .input('password', sql.VarChar(255), req.body.password)
-        .query('INSERT INTO Cllogin VALUES (@email, @password,NULL)', function (err, result) {
+        .execute('spRegistarclLogin', function (err, result) {
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
 
@@ -99,17 +99,17 @@ router.post('/registrarClLogin', function (req, res, next) {
         });
 });
 
-router.get('/registrarClEmail', function (req, res, next) { // Renderiza a pagina html
+router.get('/registrarClEmail', function (req, res, next) {
     res.render('registoClEmail');
 })
 
-router.post('/registrarClEmail', function (req, res, next) { //Pede os dados pessoais do cond e insere na bd
+router.post('/registrarClEmail', function (req, res, next) {
     if (random == req.body.codigo) {
         res.redirect('/registrarClLogin2FA');
     }
 });
 
-router.get('/registrarClLogin2FA', function (req, res, next) { // Renderiza a pagina html
+router.get('/registrarCl2FA', function (req, res, next) {
     console.log(temp_secret);
     qrcode.toDataURL(temp_secret.otpauth_url, function (err, data) {
         res.render('registoClLogin2FA', { codigo: data, manual: temp_secret.base32 });
@@ -143,18 +143,17 @@ router.get('/adicionarMetPag', function (req, res, next) { // Renderiza a pagina
 router.post('/adicionarMetPag', function (req, res, next) { //Pede os dados da carta condução
     var request = new sql.Request();
     request.input('ano', sql.Int, req.body.ano)
-    request.input('mes', sql.Int, req.body.mes)
-    request.input('numCartao', sql.VarChar(15), req.body.numCartao)
-    request.input('cvv', sql.Int, req.body.cvv)
-    request.execute('spRegistarMetPag', function (err, result) {
-        console.log("result" + JSON.stringify(result))
-        console.log("err" + JSON.stringify(err))
-        if (result.rowsAffected > 0) {
-            res.redirect('/loginCl');
-        } else {
-            res.redirect('/adicionarMetPag');
-        }
-    });
+        .input('mes', sql.Int, req.body.mes)
+        .input('numCartao', sql.VarChar(15), req.body.numCartao)
+        .input('cvv', sql.Int, req.body.cvv)
+        .execute('spRegistarMetPag', function (err, result) {
+
+            if (result.rowsAffected != null) {
+                res.redirect('/loginCl');
+            } else {
+                res.redirect('/adicionarMetPag');
+            }
+        });
 });
 
 //registrar condutor
@@ -163,6 +162,7 @@ router.get('/registrarCon', function (req, res, next) { // Renderiza a pagina ht
 })
 
 router.post('/registrarCon', function (req, res, next) { //Pede os dados pessoais do cond e insere na bd
+
     var request = new sql.Request();
     request.input('dataNasc', sql.Date, req.body.dataNasc)
         .input('genero', sql.Char(1), req.body.genero)
@@ -173,9 +173,7 @@ router.post('/registrarCon', function (req, res, next) { //Pede os dados pessoai
         .input('apelido', sql.VarChar(20), req.body.apelido)
         .input('telemovel', sql.Int, req.body.telemovel)
         .input('licTransp', sql.Int, req.body.licTransp)
-        .query('INSERT INTO Condutor VALUES (@dataNasc,@genero,@CC,@NIF,@nome,@nomeMeio,@apelido,@telemovel,@licTransp)', function (err, result) {
-            console.log("result" + JSON.stringify(result))
-            console.log("err" + JSON.stringify(err))
+        .execute('spRegistarCon', function (err, result) {
 
             if (result.rowsAffected != null) {
                 res.redirect('/registrarConLogin');
@@ -195,9 +193,8 @@ router.post('/registrarConLogin', function (req, res, next) { //Pede os dados de
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
         .input('password', sql.VarChar(255), req.body.password)
-        .query('INSERT INTO Conlogin VALUES (@email, @password,NULL)', function (err, result) {
-            console.log("result" + JSON.stringify(result))
-            console.log("err" + JSON.stringify(err))
+        .execute('spRegistarConLogin', function (err, result) {
+
 
             if (result.rowsAffected != null) {
                 const output = `<p>Email de Verificação Conta RideU</p>
@@ -285,7 +282,7 @@ router.post('/registrarCartaCond', function (req, res, next) { //Pede os dados d
     var request = new sql.Request();
     request.input('numero', sql.VarChar(12), req.body.numero)
         .input('dataEmissao', sql.Date, req.body.dataEmissao)
-        .query('INSERT INTO CartaConducao VALUES (@numero,@dataEmissao)', function (err, result) {
+        .execute('spRegistarCartaCond', function (err, result) {
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
             if (result.rowsAffected != null) {
@@ -310,7 +307,7 @@ router.post('/registrarCarro', function (req, res, next) { //Pede os dados do ca
         .input('DataRegisto', sql.Date, req.body.DataRegisto)
         .input('modelo', sql.VarChar(15), req.body.modelo)
         .input('dua', sql.Int, req.body.dua)
-        .query('INSERT INTO Carro VALUES (@marca,@cor,@combustivel,@matricula,@lugares,@DataRegisto,@modelo,@dua)', function (err, result) {
+        .execute('spRegistarCarro', function (err, result) {
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
             if (result.rowsAffected != null) {
@@ -341,7 +338,7 @@ router.post('/loginCl', async function (req, res, next) { //test login cliente
                 window: 0
             })
 
-            if ( result.rowsAffected > 0 && tokenValidates==true) {
+            if (result.rowsAffected > 0 && tokenValidates == true) {
 
                 req.session.user = req.body.email
                 res.redirect('/dashboardCl')
@@ -381,16 +378,16 @@ router.get('/logout', function (req, res, next) { // tentar integrar uma pagina 
     })
 })
 
-router.get('/loginCon', function (req, res, next) { 
+router.get('/loginCon', function (req, res, next) {
     res.render('loginCon');
 })
 
-router.post('/loginCon', async function (req, res, next) { 
+router.post('/loginCon', async function (req, res, next) {
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
         .input('password', sql.VarChar(255), req.body.password)
         .query('select co_email,co_password,co_secret as token from conlogin where co_email=@email and co_password=@password', function (err, result) {
-            
+
             const tokenValidates = speakeasy.totp.verify({
                 secret: result.recordset[0].token,
                 encoding: 'base32',
@@ -398,7 +395,7 @@ router.post('/loginCon', async function (req, res, next) {
                 window: 0
             })
 
-            if ( result.rowsAffected > 0 && tokenValidates==true) {
+            if (result.rowsAffected > 0 && tokenValidates == true) {
 
                 req.session.user = req.body.email
                 res.redirect('/dashboardCon')
