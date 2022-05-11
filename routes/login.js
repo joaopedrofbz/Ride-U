@@ -320,19 +320,63 @@ router.post('/registrarCarro', function (req, res, next) { //Pede os dados do ca
 });
 
 //////////////////////////////////////////////////////////////////////
-router.get('/loginCl', function (req, res, next) { // tentar integrar uma pagina html
+router.get('/loginCl', function (req, res, next) { 
     res.render('loginCl');
 })
-router.post('/loginCl', async function (req, res, next) { //test login cliente
+router.post('/loginCl', async function (req, res, next) { 
 
 
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
         .input('password', sql.VarChar(255), req.body.password)
-        .query('select clo_email,clo_password,clo_secret as token from cllogin where clo_email=@email and clo_password=@password', function (err, result) {
+        .execute('spLoginCl', function (err, result) {
+        
+        var data= new sql.Request
+        data.input('clcode',sql.Int,result.recordset[0].clcode)
+            .execute('spLoginClinfo', function(err,resulta){
 
+            let token=result.recordset[0].token
             const tokenValidates = speakeasy.totp.verify({
-                secret: result.recordset[0].token,
+                secret: token,
+                encoding: 'base32',
+                token: req.body.token,
+                window: 0
+            })
+            let clcode=resulta.recordset[0].nome
+            console.log("clcode "+ JSON.stringify(clcode))
+            if (result.rowsAffected > 0 && tokenValidates == true) {
+
+                req.session.user = clcode
+                res.redirect('/dashboardCl')
+
+            } else {
+                res.redirect('/loginCl');
+            }
+        })  
+        });
+})
+
+router.get('/loginCon', function (req, res, next) {
+    res.render('loginCon');
+})
+
+router.post('/loginCon', async function (req, res, next) {
+    var request = new sql.Request();
+    request.input('email', sql.VarChar(255), req.body.email)
+        .input('password', sql.VarChar(255), req.body.password)
+        .execute('spLoginCon', function (err, result) {
+        
+        var data= new sql.Request
+        data.input('concode',sql.Int,result.recordset[0].concode)
+            .execute('spLoginConinfo', function(err,resulta){
+            let concode=resulta.recordset[0].nome
+            console.log("concode "+ JSON.stringify(concode))
+
+
+            let token=result.recordset[0].token;
+            console.log("token " + JSON.stringify(token))
+            const tokenValidates = speakeasy.totp.verify({
+                secret: token,
                 encoding: 'base32',
                 token: req.body.token,
                 window: 0
@@ -340,20 +384,28 @@ router.post('/loginCl', async function (req, res, next) { //test login cliente
 
             if (result.rowsAffected > 0 && tokenValidates == true) {
 
-                req.session.user = req.body.email
-                res.redirect('/dashboardCl')
+                req.session.user = concode
+                res.redirect('/dashboardCon')
 
             } else {
-                res.redirect('/loginCl');
+                res.redirect('/loginCon');
             }
+            })
         });
 })
-
+router.get('/dashboardCon', function (req, res, next) { // tentar integrar uma pagina html
+    if (req.session.user) {
+        console.log(req.session.user)
+        res.render('dashboardCon', { user: req.session.user });
+    } else {
+        res.render('loginCon')
+    }
+})
 
 router.get('/dashboardCl', function (req, res, next) {
     if (req.session.user) {
         console.log(req.session.user)
-        res.render('dashboardCl');//, { user: req.session.user });
+        res.render('dashboardCl',{user: req.session.user});//, { user: req.session.user });
     } else {
         res.render('loginCl')
     }
@@ -376,42 +428,6 @@ router.get('/logout', function (req, res, next) { // tentar integrar uma pagina 
             res.redirect('/')
         }
     })
-})
-
-router.get('/loginCon', function (req, res, next) {
-    res.render('loginCon');
-})
-
-router.post('/loginCon', async function (req, res, next) {
-    var request = new sql.Request();
-    request.input('email', sql.VarChar(255), req.body.email)
-        .input('password', sql.VarChar(255), req.body.password)
-        .query('select co_email,co_password,co_secret as token from conlogin where co_email=@email and co_password=@password', function (err, result) {
-
-            const tokenValidates = speakeasy.totp.verify({
-                secret: result.recordset[0].token,
-                encoding: 'base32',
-                token: req.body.token,
-                window: 0
-            })
-
-            if (result.rowsAffected > 0 && tokenValidates == true) {
-
-                req.session.user = req.body.email
-                res.redirect('/dashboardCon')
-
-            } else {
-                res.redirect('/loginCon');
-            }
-        });
-})
-router.get('/dashboardCon', function (req, res, next) { // tentar integrar uma pagina html
-    if (req.session.user) {
-        console.log(req.session.user)
-        res.render('dashboardCon', { user: req.session.user });
-    } else {
-        res.render('loginCon')
-    }
 })
 
 
