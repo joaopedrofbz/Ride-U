@@ -5,32 +5,70 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Ver Cartões</title>
 	link(rel="stylesheet" href="stylesheets/Vercartao.css")
-script(src="https://code.jquery.com/jquery-3.3.1.min.js")
-script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js")
-script(src="javascripts/Metpagamento.js")
+	script(src="https://code.jquery.com/jquery-3.3.1.min.js")
+	script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js")
+	script(src="javascripts/Metpagamento.js")
+link(rel="stylesheet" href="/stylesheets/dashboard.css")
+link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css")
+link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
 </head>
 <body>
-<section>
 <div class="container">
-<div class="cardWrapper">
-<div class="card">
-<div class="bg">
-<img src="https://www.logo.wine/a/logo/Mastercard/Mastercard-Logo.wine.svg" alt="">
-</div>
-<div class="card__name">
-<p>Ride-U</p>
-</div>
-<div class="card__number">
-p=numcartao
-</div>
-<div class="card__number">
-p=cvv
-</div>
+<nav>
+	<ul>
+	<li><a href="#" class="logo">
+		<img src="images/logoride.jpg">
+		span=user 
+	</a></li>
+	<li><a href="/painelControlo">
+		<i class="fas fa-menorah"></i>
+		<span class="nav-item">Dashboard</span>
+	</a></li>
+	<li><a href="/historicoViagens">
+		<i class="fas fa-calendar-alt"></i>
+		<span class="nav-item">Historico de Viagens</span>
+	</a></li>
+		<li><a href="/vermetpagamento">
+		<i class="material-icons">payment</i>
+		<span class="nav-item">Metodo de Pagamento</span>
+	</a></li>
+	<li><a href="#">
+		<i class="fas fa-user-alt"></i>
+		<span class="nav-item">Perfil</span>
+	</a></li>
+	<li><a href="/perfilcl">
+		<i class="fas fa-cog"></i>
+		<span class="nav-item">Definições</span>
+	</a></li>
 
-<div class="highlight"></div>
-</div>
-</div>
-</div>
-</section>
+	<li><a href="/logout" class="logout">
+		<i class="fas fa-sign-out-alt"></i>
+		<span class="nav-item">Log out</span>
+	</a></li>
+	</ul>
+</nav>
+	<div class="cardWrapper">
+			<div class="card">
+				<div class="bg">
+				<img src="https://www.logo.wine/a/logo/Mastercard/Mastercard-Logo.wine.svg" alt="">
+				</div>
+				<div class="card__name">
+				<p>Ride-U</p>
+				</div>
+				<div class="card__number">
+				p=numcartao
+				</div>
+				<div class="card__number">
+				p=mes
+				</div>
+				<div class="card__number">
+				p=ano
+				</div>
+				<div class="card__number">
+				p=cvv
+				</div>
+			</div>
+	</div>
+
 </body>
 </html>

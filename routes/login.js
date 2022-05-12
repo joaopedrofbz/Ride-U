@@ -343,10 +343,12 @@ router.post('/loginCl', async function (req, res, next) {
                 window: 0
             })
             let clcode=resulta.recordset[0].nome
-            console.log("clcode "+ JSON.stringify(clcode))
+            let clinfo=result.recordset[0].clcode
+            console.log("clcode "+ JSON.stringify(clinfo))
             if (result.rowsAffected > 0 && tokenValidates == true) {
 
                 req.session.user = clcode
+                req.session.userinfo=clinfo
                 res.redirect('/dashboardCl')
 
             } else {
@@ -369,12 +371,9 @@ router.post('/loginCon', async function (req, res, next) {
         var data= new sql.Request
         data.input('concode',sql.Int,result.recordset[0].concode)
             .execute('spLoginConinfo', function(err,resulta){
+                
             let concode=resulta.recordset[0].nome
-            console.log("concode "+ JSON.stringify(concode))
-
-
             let token=result.recordset[0].token;
-            console.log("token " + JSON.stringify(token))
             const tokenValidates = speakeasy.totp.verify({
                 secret: token,
                 encoding: 'base32',
@@ -385,6 +384,7 @@ router.post('/loginCon', async function (req, res, next) {
             if (result.rowsAffected > 0 && tokenValidates == true) {
 
                 req.session.user = concode
+                
                 res.redirect('/dashboardCon')
 
             } else {
@@ -419,7 +419,7 @@ router.get('/Metpagamento', function (req, res, next) { // tentar integrar uma p
         }
 })
 */
-router.get('/logout', function (req, res, next) { // tentar integrar uma pagina html
+router.get('/logout', function (req, res, next) { 
     req.session.destroy(function (err) {
         if (err) {
             console.log(err);
@@ -428,6 +428,41 @@ router.get('/logout', function (req, res, next) { // tentar integrar uma pagina 
             res.redirect('/')
         }
     })
+})
+
+router.get('/painelControlo', function (req, res, next) {
+    if(req.session.user) {
+    var request = new sql.Request();
+    request.input('clinfo', sql.Int, req.session.userinfo)
+            .execute('spPainelClinfo',function (err, result){
+                if (result.rowsAffected > 0) {
+                    res.render('painelControlo',{user: req.session.user,virealizada:result.recordset[0].Virealizada,
+                        estatuto:result.recordset[0].estatuto,mediaEstrelas:result.recordset[0].mediaEstrelas,
+                        pontoRecolha:result.recordset[0].pontoRecolha,datahora:result.recordset[0].datahora,
+                        pontoDestino:result.recordset[0].pontoDestino,datahora2:result.recordset[1].datahora,
+                        
+                    })
+                }console.log("AI "+JSON.stringify( result.recordsets[0].datahora));
+            } )
+                }else{
+                    res.redirect('/loginCl')
+                } 
+})
+router.get('/vermetpagamento', function (req, res, next) {
+    if(req.session.user) {
+    var request = new sql.Request();
+    request.input('clinfo', sql.Int, req.session.userinfo)
+            .execute('spMetPagamento',function (err, result){
+                if (result.rowsAffected > 0) {
+                    res.render('vermetpagamento',{user: req.session.user,numcartao:result.recordset[0].numero,cvv:result.recordset[0].cvv,
+                        ano:result.recordset[0].ano,mes:result.recordset[0].mes
+                        
+                    })
+                }
+            } )
+                }else{
+                    res.redirect('/loginCl')
+                } 
 })
 
 
