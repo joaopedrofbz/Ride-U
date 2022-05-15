@@ -136,18 +136,18 @@ router.post('/registrarCl2FA', function (req, res, next) {
         })
 });
 
-router.get('/adicionarMetPag', function (req, res, next) { // Renderiza a pagina html
+router.get('/adicionarMetPag', function (req, res, next) { 
     res.render('addMetPag');
 })
 
-router.post('/adicionarMetPag', function (req, res, next) { //Pede os dados da carta condução
+router.post('/adicionarMetPag', function (req, res, next) { //rever
     var request = new sql.Request();
     request.input('ano', sql.Int, req.body.ano)
         .input('mes', sql.Int, req.body.mes)
         .input('numCartao', sql.VarChar(15), req.body.numCartao)
         .input('cvv', sql.Int, req.body.cvv)
         .execute('spRegistarMetPag', function (err, result) {
-
+        
             if (result.rowsAffected != null) {
                 res.redirect('/loginCl');
             } else {
@@ -183,40 +183,39 @@ router.post('/registrarCon', function (req, res, next) { //Pede os dados pessoai
         });
 });
 
-router.get('/registrarConLogin', function (req, res, next) { // Renderiza a pagina html
+router.get('/registrarConLogin', function (req, res, next) { 
     res.render('registoConLogin');
 })
 
 const random = Math.floor(Math.random() * 9999) + 100;
 
-router.post('/registrarConLogin', function (req, res, next) { //Pede os dados de login do cond e insere na bd
+router.post('/registrarConLogin', function (req, res, next) { 
+
     var request = new sql.Request();
     request.input('email', sql.VarChar(255), req.body.email)
         .input('password', sql.VarChar(255), req.body.password)
         .execute('spRegistarConLogin', function (err, result) {
-
-
             if (result.rowsAffected != null) {
                 const output = `<p>Email de Verificação Conta RideU</p>
                 <p>Introduza o código abaixo na sua aplicação RideU</p><br> ${random}</p>`;
                 let transporter = nodemailer.createTransport({
-                    host: 'smtp.office365.com',
-                    port: 587,
+                    host: 'smtp.office365.com', // host smtp, alterar consoante o provedor de serviço
+                    port: 587, // porta do host
                     secure: false,
                     auth: {
-                        user: 'Rideu@outlook.pt',
-                        pass: 'PaoPaoPao'
+                        user: 'Rideu@outlook.pt', //email remetente
+                        pass: 'PaoPaoPao'   // pass email remetente
                     },
                     tls: {
-                        rejectUnauthorized: false
+                        rejectUnauthorized: false // false porque estamos a correr localmente
                     }
                 });
 
                 let mailOptions = {
-                    from: '"Ride-U" <Rideu@outlook.pt>',
-                    to: req.body.email,
-                    subject: 'Ride-U| Verificar Email',
-                    html: output
+                    from: '"Ride-U" <Rideu@outlook.pt>', //email remetente
+                    to: req.body.email, //email destinatario
+                    subject: 'Ride-U| Verificar Email', // assunto do email
+                    html: output // corpo do texto do email
                 };
 
                 transporter.sendMail(mailOptions, (error, info) => {
@@ -233,40 +232,39 @@ router.post('/registrarConLogin', function (req, res, next) { //Pede os dados de
         });
 });
 
-router.get('/registrarConfEmail', function (req, res, next) { // Renderiza a pagina html
+router.get('/registrarConfEmail', function (req, res, next) { 
     res.render('registoConfEmail');
 })
 
-router.post('/registrarConfEmail', function (req, res, next) { //Pede os dados pessoais do cond e insere na bd
-    if (random == req.body.codigo) {
+router.post('/registrarConfEmail', function (req, res, next) { 
+    if (random == req.body.codigo) { // se o codigo enviado no email for igual ao codigo inserido no html redireciona o utilizador para registrar o 2fa
         res.redirect('/registrarcon2FA');
     }
 
 });
-var temp_secret = speakeasy.generateSecret({ length: 20 });
-router.get('/registrarCon2FA', function (req, res, next) { // Renderiza a pagina html
 
+var temp_secret = speakeasy.generateSecret({ length: 20 }); //gera o codigo secreto que se insere no autenticador
+router.get('/registrarCon2FA', function (req, res, next) { 
     console.log(temp_secret);
-    qrcode.toDataURL(temp_secret.otpauth_url, function (err, data) {
-        res.render('registoCon2FA', { codigo: data, manual: temp_secret.base32 });
+    qrcode.toDataURL(temp_secret.otpauth_url, function (err, data) { // coloca o codigo gerado acima em formato qr code
+        res.render('registoCon2FA', { codigo: data, manual: temp_secret.base32 }); //manual: escreve o codigo gerado no html
     });
-
 })
 
-router.post('/registrarCon2FA', function (req, res, next) { //Pede os dados pessoais do cond e insere na bd
+router.post('/registrarCon2FA', function (req, res, next) { 
 
     var request = new sql.Request();
-    request.input('secret', sql.VarChar(32), temp_secret.base32)
-        .execute('spregistarCon2FA', function (err, result) {
+    request.input('secret', sql.VarChar(32), temp_secret.base32) // secret para inserir na conta do utilizador
+        .execute('spregistarCon2FA', function (err, result) {   // executa a store procedure para inserir o secret
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
-            const tokenValidates = speakeasy.totp.verify({
-                secret: temp_secret.base32,
-                encoding: 'base32',
-                token: req.body.token,
-                window: 0
+            const tokenValidates = speakeasy.totp.verify({ // função que faz a verificação do secret inserido pelo utilizador
+                secret: temp_secret.base32, // secret a validar
+                encoding: 'base32', // forma de representação do secret
+                token: req.body.token, // token inserido pelo utilizador a ser validado
+                window: 0 // tempo de validação do token 0=30segundos da data atual
             })
-            if (tokenValidates == true) {
+            if (tokenValidates == true) { // se a função responder que o codigo esta correto prosseguir o registo
                 res.redirect('/registrarCartaCond')
             } else {
                 res.redirect('/registrarCon2FA')
@@ -285,7 +283,7 @@ router.post('/registrarCartaCond', function (req, res, next) { //Pede os dados d
         .execute('spRegistarCartaCond', function (err, result) {
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
-            if (result.rowsAffected != null) {
+            if (result.rowsAffected != null) { // se for inserido com sucesso prosseguir
                 res.redirect('/registrarCarro');
             } else {
                 res.redirect('/registrarCartaCond');
@@ -310,13 +308,12 @@ router.post('/registrarCarro', function (req, res, next) { //Pede os dados do ca
         .execute('spRegistarCarro', function (err, result) {
             console.log("result" + JSON.stringify(result))
             console.log("err" + JSON.stringify(err))
-            if (result.rowsAffected != null) {
+            if (result.rowsAffected != null) { // se for inserido com sucesso prosseguir
                 res.redirect('/loginCon');
             } else {
                 res.redirect('/registrarconCarro');
             }
         })
-
 });
 
 //////////////////////////////////////////////////////////////////////
@@ -334,9 +331,9 @@ router.post('/loginCl', async function (req, res, next) {
         var data= new sql.Request
         data.input('clcode',sql.Int,result.recordset[0].clcode)
             .execute('spLoginClinfo', function(err,resulta){
-
+                
             let token=result.recordset[0].token
-            const tokenValidates = speakeasy.totp.verify({
+            var tokenValidates = speakeasy.totp.verify({
                 secret: token,
                 encoding: 'base32',
                 token: req.body.token,
@@ -344,13 +341,12 @@ router.post('/loginCl', async function (req, res, next) {
             })
             let clcode=resulta.recordset[0].nome
             let clinfo=result.recordset[0].clcode
-            console.log("clcode "+ JSON.stringify(clinfo))
-            if (result.rowsAffected > 0 && tokenValidates == true) {
+            console.log("clcode "+ JSON.stringify(tokenValidates))
 
+            if ( result.rowsAffected != null && tokenValidates==true ) { // se o resultado da query for verdadeiro e o token inserido pelo utilizador for verdadeiro prosserguir
                 req.session.user = clcode
                 req.session.userinfo=clinfo
                 res.redirect('/dashboardCl')
-
             } else {
                 res.redirect('/loginCl');
             }
@@ -380,8 +376,7 @@ router.post('/loginCon', async function (req, res, next) {
                 token: req.body.token,
                 window: 0
             })
-
-            if (result.rowsAffected > 0 && tokenValidates == true) {
+            if (result.rowsAffected != null && tokenValidates == true) {
 
                 req.session.user = concode
                 
@@ -393,7 +388,7 @@ router.post('/loginCon', async function (req, res, next) {
             })
         });
 })
-router.get('/dashboardCon', function (req, res, next) { // tentar integrar uma pagina html
+router.get('/dashboardCon', function (req, res, next) { 
     if (req.session.user) {
         console.log(req.session.user)
         res.render('dashboardCon', { user: req.session.user });
@@ -410,15 +405,7 @@ router.get('/dashboardCl', function (req, res, next) {
         res.render('loginCl')
     }
 })
-/*
-router.get('/Metpagamento', function (req, res, next) { // tentar integrar uma pagina html
-    var request = new sql.Request();
-    request.input('email', sql.VarChar(255), req.session.user)
-        .query('select met_numcartao,met_ano,met_mes,met_cvv from cllogin where clo_email=@email and clo_password=@password', function (err, result) {
-            res.render('Vermetpagamento',{numcartao=met_numcartao})
-        }
-})
-*/
+
 router.get('/logout', function (req, res, next) { 
     req.session.destroy(function (err) {
         if (err) {
