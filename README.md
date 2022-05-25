@@ -12,3 +12,6 @@ Modifique o campo instance name para o nome da instancia do seu sql server no fi
 No fim da instalação das dependencias deverá fazer "npm start" para iniciar o projeto.
 
 Abra o seu browser de preferencia e escreva "localhost:3000" e estará assim pronto para utilização.
+
+LINK PARA VIDEO DE APRESENTAÇÃO( So pessoas pertencentes à IADE-U tem acesso)
+https://iade.sharepoint.com/:f:/s/Projeto4Semestre/EijGjacu4TZDhIAGoYNiYiEBjaaU-w1n7uNlpYrhgbe7Fw?e=8b3RjU
